@@ -1,0 +1,38 @@
+{
+  "organ": "fall-airgap",
+  "what": "The 6-byte Primorial-Fold transport. Predictions committed BEFORE the measurement ran (seal-before-measure). Measured by fallairgap.mjs measure(), counted in real UTF-8 wire bytes.",
+  "sealed": "2026-10-05",
+  "codec": "SENTINEL (vendored, mutation-gated) — Thomas Frumkin's Konomi primorial-fold codec",
+  "predictions": [
+    {
+      "id": "P1-coordinate",
+      "claim": "Every event's 6-byte PAYLOAD beats its self-describing JSON by at least 20x (the coordinate regime). We predicted 20-40x, not Simon's headline 42x, because our canonical JSON is leaner than his 252-byte example.",
+      "pass_if": "every ratioPayload >= 20"
+    },
+    {
+      "id": "P2-delta",
+      "claim": "A recurring deterministic step sent as a 1-byte delta (heartbeat, pipeline_step) beats JSON by at least 100x (the 100x+ regime).",
+      "pass_if": "every deltaBytes-bearing event has ratioDelta >= 100"
+    },
+    {
+      "id": "P3-signature-floor",
+      "claim": "Signed PER-PACKET, the 71-byte wire vs apples-to-apples signed JSON is UNDER 10x. The 64-byte Ed25519 signature dominates, proving the 42-100x is only realised when the signature is AMORTISED over a session, never per packet. This is the honest limit the 15x test never measured.",
+      "pass_if": "every ratioWireVsJsonSigned < 10"
+    },
+    {
+      "id": "P4-entropy-floor",
+      "claim": "A raw Ed25519 signature (64B) and a SHA-256 hash (32B) do not compress past their entropy floor.",
+      "pass_if": "entropyFloor lists signature=64 and hash=32 both compresses:false"
+    },
+    {
+      "id": "P5-gate",
+      "claim": "A forged or tampered signed frame is dropped by the signature-first gate BEFORE its payload is parsed; a valid frame round-trips. No forged frame ever compiles to a command.",
+      "pass_if": "sigFirstDrop + SENTINEL check reject forged before parse, accept valid"
+    },
+    {
+      "id": "P6-roundtrip",
+      "claim": "All 5 sample event types encode to 6 bytes and decode back to the same event type (codec is total and reversible for the event set).",
+      "pass_if": "selfCheck roundTrips == 5 of 5"
+    }
+  ]
+}

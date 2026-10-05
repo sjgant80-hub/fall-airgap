@@ -1,0 +1,17 @@
+FALL-AIRGAP
+===========
+
+The 6-byte Primorial-Fold codec at the heart of this transport is the Konomi
+architecture, created by Thomas Frumkin, and is used here with permission.
+
+The signature-first gate (verify-before-parse), the opcode and resource sets,
+the κ-witness fold, and the zero-budget phantom honeypot are reused from
+SENTINEL (https://github.com/sjgant80-hub/sentinel), vendored verbatim as
+sentinel.mjs. SENTINEL's kernel is mutation-gated in its own repository.
+
+This repository (fall-airgap) adds the transport layer — event encoders,
+the wire framing, the byte-ratio measurement, delta/coordinate streaming,
+the Human Door, and the tiered reroute policy — and measures the compression
+claim in real wire bytes.
+
+Built by Kar. MIT for the code (see LICENSE).

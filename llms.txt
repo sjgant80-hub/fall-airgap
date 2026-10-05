@@ -1,0 +1,22 @@
+# FALL-AIRGAP
+> Air-gap transport: real estate state-events as the SENTINEL 6-byte Primorial-Fold packet, signed (Ed25519) and verified-before-parse, moved over WebRTC / acoustic FSK / NFC with no HTTP. The 42-100x compression claim, MEASURED in real wire bytes.
+
+Live: https://sjgant80-hub.github.io/fall-airgap/
+Source: https://github.com/sjgant80-hub/fall-airgap
+Built on SENTINEL (https://sjgant80-hub.github.io/sentinel/). Codec: Thomas Frumkin's Konomi primorial-fold (used with permission).
+
+## Measured byte-ratios (real UTF-8 wire bytes)
+- capability_delegation: 186B JSON -> 6B coordinate = 31x; signed-per-packet 71B vs signed-JSON = 3.99x
+- gate_verdict: 171B JSON -> 6B coordinate = 28.5x; signed-per-packet 71B vs signed-JSON = 3.77x
+- heartbeat: 136B JSON -> 6B coordinate = 22.67x; 1B delta = 136x; signed-per-packet 71B vs signed-JSON = 3.28x
+- pipeline_step: 145B JSON -> 6B coordinate = 24.17x; 1B delta = 145x; signed-per-packet 71B vs signed-JSON = 3.41x
+- antibody: 136B JSON -> 6B coordinate = 22.67x; signed-per-packet 71B vs signed-JSON = 3.28x
+
+## The honest limit
+The big ratios are the 6-byte COORDINATE (31-31x) and the 1-byte DELTA (145x). Signing every packet pays the irreducible 64-byte Ed25519 floor, so per-packet it is only 3.28x. The 42-100x is real only when one handshake signature is amortised over a session.
+Irreducible (do not compress): Ed25519 signature 64B, SHA-256 hash 32B, novel human prompt.
+
+## Transports
+- WebRTC DataChannel: MEASURED (live, two tabs, STUN only)
+- Acoustic FSK: MEASURED (loopback)
+- NFC (Web NFC), LoRa, AM/FM/Ham: DESIGN ONLY (need a radio)

@@ -1,0 +1,13 @@
+{
+  "name": "fall-airgap",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "fallairgap.mjs",
+  "description": "Air-gap transport: real estate state-events as the SENTINEL 6-byte Primorial-Fold packet, signed (Ed25519) and verified-before-parse, moved over WebRTC / acoustic FSK / NFC with no HTTP. The 42-100x compression claim, measured in real wire bytes.",
+  "author": "sjgant80-hub <sjgant80@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test",
+    "page": "node scripts/make-page.mjs"
+  }
+}

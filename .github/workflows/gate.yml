@@ -1,0 +1,42 @@
+name: gate
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: the transport's tests (real Ed25519)
+        run: node --test fallairgap.test.mjs
+
+  witness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: witness — every mutant of the transport must die (baselined equivalents aside)
+        run: |
+          git clone --depth 1 https://github.com/sjgant80-hub/witness.git /tmp/witness
+          node /tmp/witness/witness.mjs mutate fallairgap.mjs --timeout 60000 --cap 500 --test node --test fallairgap.test.mjs | tee verdict.json
+          node -e "const v=JSON.parse(require('fs').readFileSync('verdict.json','utf8').replace(/[^]*?(\{[^]*\})[^]*/,'\$1')); if(!v.clean){console.error('witness NOT clean: '+v.survived.length+' survivors'); process.exit(1)} console.log('witness CLEAN — killed '+v.killed+', ignored '+v.ignored.length)"
+
+  page:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: the page is the fixpoint of the kernel (no drift)
+        run: |
+          node scripts/make-page.mjs
+          git diff --exit-code -- index.html llms.txt || (echo "index.html/llms.txt drifted from the kernel — run make-page.mjs" && exit 1)

@@ -1,0 +1,4 @@
+node_modules/
+witness.verdict.txt
+*.witnessbak
+verdict.json

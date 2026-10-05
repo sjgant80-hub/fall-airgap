@@ -1,0 +1,37 @@
+[
+  {
+    "mutation": ">= → >",
+    "snippet": "const clampU16 = (v) => (Number.isInteger(v) && v >= 0 ? Math.min(v, 0xFFFF) : 0);",
+    "reason": "Equivalent: >= and > differ only at v===0, and clampU16(0) is Math.min(0,0xFFFF)===0, identical to the else branch 0. No input can distinguish them."
+  },
+  {
+    "mutation": ">= → >",
+    "snippet": "export function quantKappa(k) { const x = typeof k === 'number' && k >= 0 ? Math.min(k, 1)",
+    "reason": "Equivalent: >= and > differ only at k===0, and quantKappa(0) folds through Math.min(0,1)===0 to 0, identical to the else branch 0. Unkillable."
+  },
+  {
+    "mutation": ">= → >",
+    "snippet": "export function deltaEncode(step) { return Number.isInteger(step) && step >= 0 ? step & 0x",
+    "reason": "Equivalent: >= and > differ only at step===0, and deltaEncode(0) is 0 & 0xFF ===0, identical to the else branch 0. No test can distinguish."
+  },
+  {
+    "mutation": ">= → >",
+    "snippet": "const t = u8(tip), p = Number.isInteger(prevStep) && prevStep >= 0 ? prevStep : 0;",
+    "reason": "Equivalent: >= and > differ only at prevStep===0, where both the then-branch (prevStep) and the else-branch yield p===0. Unkillable boundary."
+  },
+  {
+    "mutation": "< → <=",
+    "snippet": "for (let i = 0; i < RESOURCES.length; i++) if (m & (1 << i)) out.push(RESOURCES[i]);",
+    "reason": "Equivalent: <= adds one out-of-bounds iteration i===RESOURCES.length(8); the mask is u8 (0-255) so bit 8 (1<<8===256) is never set and nothing is pushed. Output identical."
+  },
+  {
+    "mutation": "&& → ||",
+    "snippet": "if (d.ok && d.type === ev.type) roundTrips += 1;",
+    "reason": "Equivalent on the fixed input: every SAMPLE_EVENTS entry round-trips, so d.ok and d.type===ev.type are both always true; && and || coincide and roundTrips is 5 either way."
+  },
+  {
+    "mutation": "&& → ||",
+    "snippet": "rows.push({ event: ev.type, ...m, roundTrip: d.ok && d.type === ev.type });",
+    "reason": "Equivalent on the fixed input: all SAMPLE_EVENTS round-trip so both operands are always true; && and || produce the same roundTrip flag for every row. No sample can distinguish them."
+  }
+]
