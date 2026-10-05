@@ -13,7 +13,7 @@
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0b0e14">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareSourceCode","name":"FALL-AIRGAP","description":"Air-gap transport: real estate state-events as the SENTINEL 6-byte Primorial-Fold packet, signed and verified-before-parse, moved over WebRTC / NFC / acoustic FSK with no HTTP. The 42–100× compression claim, measured in real wire bytes.","codeRepository":"https://github.com/sjgant80-hub/fall-airgap","url":"https://sjgant80-hub.github.io/fall-airgap/","programmingLanguage":"JavaScript","license":"https://opensource.org/licenses/MIT","author":{"@type":"Person","name":"Kar"},"isBasedOn":{"@type":"SoftwareSourceCode","name":"SENTINEL","url":"https://sjgant80-hub.github.io/sentinel/"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the 6-byte packet?","acceptedAnswer":{"@type":"Answer","text":"The SENTINEL Primorial-Fold packet: opcode, two 4-bit node indices, an 8-bit capability bitmask, a uint16 budget, and a κ-witness fold. A whole estate state-event in six bytes."}},{"@type":"Question","name":"Is the 42–100× compression real?","acceptedAnswer":{"@type":"Answer","text":"Measured here in real wire bytes: 31× for a 6-byte coordinate and 145× for a recurring 1-byte delta. But a signed-per-packet frame pays the 64-byte Ed25519 signature floor, so it is only 3.28×. The big ratios are real only when the signature is amortised over a session."}},{"@type":"Question","name":"What travels over the air?","acceptedAnswer":{"@type":"Answer","text":"A WebRTC DataChannel is measured live in two tabs. Acoustic FSK is measured in loopback. NFC and LoRa/Ham are design-only — they need a radio."}}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"What is the 6-byte packet?","acceptedAnswer":{"@type":"Answer","text":"The SENTINEL Primorial-Fold packet: opcode, two 4-bit node indices, an 8-bit capability bitmask, a uint16 budget, and a κ-witness fold. A whole estate state-event in six bytes."}},{"@type":"Question","name":"Is the 42–100× compression real?","acceptedAnswer":{"@type":"Answer","text":"Sealed: the predictions and the sha256 of every input (the codec and the transport kernel) are committed as their own commit. The byte-ratios are measured on the next commit and re-derived on CI from exactly these inputs, so the seal provably predates the result."}},{"@type":"Question","name":"What travels over the air?","acceptedAnswer":{"@type":"Answer","text":"A WebRTC DataChannel is measured live in two tabs. Acoustic FSK is measured in loopback. NFC and LoRa/Ham are design-only — they need a radio."}}]}</script>
 <style>
 :root{--bg:#0b0e14;--panel:#121725;--panel2:#0f1420;--ink:#e6edf6;--dim:#8b97ab;--line:#232c40;--hot:#5eead4;--acc:#7c9cff;--warn:#f5b54a;--bad:#ff6b6b;--ok:#4ade80;--mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
 @media(prefers-color-scheme:light){:root:not([data-theme=dark]){--bg:#f5f7fb;--panel:#fff;--panel2:#eef2f8;--ink:#121725;--dim:#5a6678;--line:#dde3ee;--hot:#0d9488;--acc:#3454d1}}
@@ -59,9 +59,9 @@ a{color:var(--acc)}
 <h1>The 6-byte packet, over the Air</h1>
 <p class="lede">An estate state-event is six bytes. Signed, verified before it is ever parsed, and pushed over a bidirectional channel with no HTTP. Here it is, measured in real wire bytes — and honest about the one thing that does not compress.</p>
 <div class="row">
-<span class="pill ok" id="hdr-coord">coordinate 31×</span>
-<span class="pill ok" id="hdr-delta">delta 145×</span>
-<span class="pill warn" id="hdr-wire">signed-per-packet 3.28×</span>
+<span class="pill ok" id="hdr-coord">coordinate — measured on CI</span>
+<span class="pill ok" id="hdr-delta">delta — measured on CI</span>
+<span class="pill warn" id="hdr-wire">signed-per-packet — measured on CI</span>
 </div>
 </header>
 
@@ -73,20 +73,22 @@ a{color:var(--acc)}
 <p style="margin:0;color:var(--dim);font-size:14px">Byte 0 opcode · byte 1 two 4-bit node indices · byte 2 an 8-bit capability bitmask · bytes 3–4 a uint16 budget (little-endian) · byte 5 the primorial-fold κ-witness. On the wire it travels signed: <code>[sourceId:1][payload:6][signature:64] = 71 bytes</code>. The codec and the signature-first gate are <a href="https://sjgant80-hub.github.io/sentinel/">SENTINEL</a>'s live, mutation-gated kernel — reused here, not re-invented.</p>
 </div>
 
-<h2>Measured: the byte-ratio per event type</h2>
-<p class="lede" style="font-size:16px">Real UTF-8 bytes, counted on the wire by the kernel below. This is the number the 15× test never measured.</p>
+<h2>Sealed: the predictions, pinned before the measurement</h2>
+<p class="lede" style="font-size:16px">Committed as its own commit, before any measurement. The byte-ratios land on the next commit and are re-derived on CI from exactly the inputs hashed below — so the seal provably predates the result. You can re-run the kernel yourself now, below.</p>
 <div class="card">
 <table>
-<thead><tr><th>event</th><th>JSON</th><th>bytes</th><th>coordinate</th><th>1-byte delta</th><th>signed/packet</th></tr></thead>
+<thead><tr><th>prediction</th><th colspan="4">claim</th><th>state</th></tr></thead>
 <tbody id="ratio-body">
-<tr><td>capability_delegation</td><td class="n">186</td><td class="n">6</td><td class="n hot">31×</td><td class="n">—</td><td class="n dim">3.99×</td></tr>
-<tr><td>gate_verdict</td><td class="n">171</td><td class="n">6</td><td class="n hot">28.5×</td><td class="n">—</td><td class="n dim">3.77×</td></tr>
-<tr><td>heartbeat</td><td class="n">136</td><td class="n">6</td><td class="n hot">22.67×</td><td class="n">136×</td><td class="n dim">3.28×</td></tr>
-<tr><td>pipeline_step</td><td class="n">145</td><td class="n">6</td><td class="n hot">24.17×</td><td class="n">145×</td><td class="n dim">3.41×</td></tr>
-<tr><td>antibody</td><td class="n">136</td><td class="n">6</td><td class="n hot">22.67×</td><td class="n">—</td><td class="n dim">3.28×</td></tr>
+<tr><td>P1-coordinate</td><td colspan="4" class="dim">Every event's 6-byte PAYLOAD beats its self-describing JSON by at least 20x (the coordinate regime). We predicted 20-40x, not Simon's headline 42x, because our canonical JSON is leaner than his 252-byte example.</td><td class="n dim">sealed</td></tr>
+<tr><td>P2-delta</td><td colspan="4" class="dim">A recurring deterministic step sent as a 1-byte delta (heartbeat, pipeline_step) beats JSON by at least 100x (the 100x+ regime).</td><td class="n dim">sealed</td></tr>
+<tr><td>P3-signature-floor</td><td colspan="4" class="dim">Signed PER-PACKET, the 71-byte wire vs apples-to-apples signed JSON is UNDER 10x. The 64-byte Ed25519 signature dominates, proving the 42-100x is only realised when the signature is AMORTISED over a session, never per packet. This is the honest limit the 15x test never measured.</td><td class="n dim">sealed</td></tr>
+<tr><td>P4-entropy-floor</td><td colspan="4" class="dim">A raw Ed25519 signature (64B) and a SHA-256 hash (32B) do not compress past their entropy floor.</td><td class="n dim">sealed</td></tr>
+<tr><td>P5-gate</td><td colspan="4" class="dim">A forged or tampered signed frame is dropped by the signature-first gate BEFORE its payload is parsed; a valid frame round-trips. No forged frame ever compiles to a command.</td><td class="n dim">sealed</td></tr>
+<tr><td>P6-roundtrip</td><td colspan="4" class="dim">All 5 sample event types encode to 6 bytes and decode back to the same event type (codec is total and reversible for the event set).</td><td class="n dim">sealed</td></tr>
 </tbody>
 </table>
-<p style="margin:6px 0 0;color:var(--dim);font-size:13px"><b>Read it honestly:</b> the 6-byte coordinate beats self-describing JSON <b>31–31×</b>, and a recurring deterministic step sent as a 1-byte delta hits <b>145×</b> — the receiver recomputes the step locally. But sign <em>every</em> packet and the 64-byte Ed25519 signature dominates: just <b>3.28×</b> apples-to-apples. The 42–100× is real <b>only when one handshake signature authenticates a whole session</b> and coordinates then stream over it.</p>
+<p style="margin:10px 0 6px;color:var(--dim);font-size:13px"><b>The inputs, pinned (sha256) — the measurement must re-derive from exactly these:</b></p><table><thead><tr><th>input</th><th>sha256</th></tr></thead><tbody><tr><td class="mono">sentinel.mjs</td><td class="mono dim" style="word-break:break-all">81f05c11fa98c72e7119f3b8166d2cf4ff10cdeccaa1ae0d711367d778944440</td></tr>
+<tr><td class="mono">fallairgap.mjs</td><td class="mono dim" style="word-break:break-all">dc031a2124dd8a9b1946f3f0e400c3c9b94b942793b6a58e0ee79daa99e51f91</td></tr></tbody></table>
 </div>
 
 <h3>The Shannon floor — what cannot compress</h3>

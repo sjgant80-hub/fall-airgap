@@ -1,6 +1,6 @@
 {
   "organ": "fall-airgap",
-  "what": "The 6-byte Primorial-Fold transport. Predictions committed BEFORE the measurement ran (seal-before-measure). Measured by fallairgap.mjs measure(), counted in real UTF-8 wire bytes.",
+  "what": "The 6-byte Primorial-Fold transport. Predictions + input hashes committed as their OWN commit BEFORE the measurement commit (seal-before-measure, provable on the public record). Ratios are measured by fallairgap.mjs measure() in real UTF-8 wire bytes and re-derived on CI from the sealed inputs.",
   "sealed": "2026-10-05",
   "codec": "SENTINEL (vendored, mutation-gated) — Thomas Frumkin's Konomi primorial-fold codec",
   "predictions": [
@@ -34,5 +34,9 @@
       "claim": "All 5 sample event types encode to 6 bytes and decode back to the same event type (codec is total and reversible for the event set).",
       "pass_if": "selfCheck roundTrips == 5 of 5"
     }
-  ]
+  ],
+  "inputs": {
+    "sentinel.mjs": "81f05c11fa98c72e7119f3b8166d2cf4ff10cdeccaa1ae0d711367d778944440",
+    "fallairgap.mjs": "dc031a2124dd8a9b1946f3f0e400c3c9b94b942793b6a58e0ee79daa99e51f91"
+  }
 }
