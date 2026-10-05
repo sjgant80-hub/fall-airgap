@@ -5,11 +5,16 @@ Live: https://sjgant80-hub.github.io/fall-airgap/
 Source: https://github.com/sjgant80-hub/fall-airgap
 Built on SENTINEL (https://sjgant80-hub.github.io/sentinel/). Codec: Thomas Frumkin's Konomi primorial-fold (used with permission).
 
-## Sealed, awaiting measurement
-The predictions and the sha256 of every input are committed as their own commit before the measurement. Inputs pinned:
-- sentinel.mjs: sha256 81f05c11fa98c72e7119f3b8166d2cf4ff10cdeccaa1ae0d711367d778944440
-- fallairgap.mjs: sha256 dc031a2124dd8a9b1946f3f0e400c3c9b94b942793b6a58e0ee79daa99e51f91
-The byte-ratios land on the next commit and are re-derived on CI from exactly these inputs.
+## Measured byte-ratios (real UTF-8 wire bytes)
+- capability_delegation: 186B JSON -> 6B coordinate = 31x; signed-per-packet 71B vs signed-JSON = 3.99x
+- gate_verdict: 171B JSON -> 6B coordinate = 28.5x; signed-per-packet 71B vs signed-JSON = 3.77x
+- heartbeat: 136B JSON -> 6B coordinate = 22.67x; 1B delta = 136x; signed-per-packet 71B vs signed-JSON = 3.28x
+- pipeline_step: 145B JSON -> 6B coordinate = 24.17x; 1B delta = 145x; signed-per-packet 71B vs signed-JSON = 3.41x
+- antibody: 136B JSON -> 6B coordinate = 22.67x; signed-per-packet 71B vs signed-JSON = 3.28x
+
+## The honest limit
+The big ratios are the 6-byte COORDINATE (31-31x) and the 1-byte DELTA (145x). Signing every packet pays the irreducible 64-byte Ed25519 floor, so per-packet it is only 3.28x. The 42-100x is real only when one handshake signature is amortised over a session.
+Irreducible (do not compress): Ed25519 signature 64B, SHA-256 hash 32B, novel human prompt.
 
 ## Transports
 - WebRTC DataChannel: MEASURED (live, two tabs, STUN only)
